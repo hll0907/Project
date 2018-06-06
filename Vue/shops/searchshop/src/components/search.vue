@@ -110,7 +110,7 @@ export default {
     },
     onSearch() {
       let _this = this;
-      // 此处使用node做了代理product/other/list?keyword=%E5%B7%A5%E4%B8%9A&page=1&pageRows=20
+      // 此处使用node做了代理
       this.$axios
         .get(
           _this.url +
