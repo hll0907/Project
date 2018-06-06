@@ -2,12 +2,29 @@
   <section style="">
     <div style="position:absolute;background:#ffffff">
         <div style="position:fixed;z-index:999;width:100%">
-          <van-search v-model="keyWord" show-action @search="onSearch"  placeholder="搜索淘宝天猫名称或关键词">
-             <van-button slot="action" @click="onSearch" type="danger" size="small">超级搜</van-button>
-          </van-search>
+          <van-cell-group>
+            <van-search v-model="keyWord" show-action @search="superSearch"  placeholder="搜索您要搜索的宝贝">
+              <van-button slot="action" @click="superSearch" type="danger" size="small">搜索</van-button>
+            </van-search>
+          </van-cell-group>
+          <van-cell-group>
+            <div style="text-align:center;">
+            <van-row>
+              <van-col span="8">
+                <van-button type="primary" size='small' style="width:100%">仅看有券</van-button>
+              </van-col>
+              <van-col span="8">
+                <van-button type="danger" size='small' style="width:100%">海外商品</van-button>
+              </van-col>
+              <van-col span="8">
+                <van-button type="primary" size='small' style="width:100%">站内精选</van-button>
+              </van-col>
+            </van-row>
+            </div>
+          </van-cell-group>
         </div> 
     </div>
-    <section style="height:42px;"></section>
+    <section style="height:76px;"></section>
     <section>
       <van-pull-refresh v-model.lazy="isLoading" @refresh="onRefresh">
           <div>
@@ -24,18 +41,19 @@
                     <div v-if="(key+1)%2==1">
                       <van-col span="12" class="img_border" >
                         <van-cell-group>
-                          <img :src="r.mainPic" class="goods-imgurl">
-                            <div class="good_name" style="height:0.8rem;">{{r.title}}</div>
+                          <img :src="r.itempic" class="goods-imgurl">
+                            <div class="good_name" style="height:0.9rem;">
+                              <img :src="r.icon"/>{{r.title}}</div>
                               <div>
                                 <span>
-                                  <van-tag type="danger" v-if="r.couponPrice!=0">{{r.couponPrice}}元优惠券</van-tag>
+                                  <van-tag type="danger" v-if="r.qfee!=0">{{r.qfee}}元优惠券</van-tag>
                                 </span>
-                                  <van-tag plain class="intergral_style" style="color: #fa2509;">约赚:{{r.integral}} 佣金币</van-tag>
+                                  <van-tag plain class="intergral_style" style="color: #fa2509;">约赚:{{r.fl}} 佣金币</van-tag>
                               </div>
                               <div style="height:0.8rem">
-                                <span class="price_style">￥{{r.price}}</span>
-                                <span v-if="r.couponPrice!=0" class="goods-express">&nbsp;原价:￥{{r.originPrice}}</span>
-                                <span class="salenumber_style">已售{{r.salesNum}}件</span>                       
+                                <span class="price_style">￥{{r.itemfee2}}</span>
+                                <span v-if="r.qfee!=0" class="goods-express">&nbsp;原价:￥{{r.itemfee}}</span>
+                                <span class="salenumber_style">已售{{r.itemmsell}}件</span>                       
                               </div>
                         </van-cell-group>
                       </van-col>
@@ -44,18 +62,19 @@
                       <van-cell-group>
                           <van-col span="12" class="img_border" >
                               <van-cell-group>
-                                  <img :src="r.mainPic" class="goods-imgurl">
-                                      <div class="good_name" style="height:0.8rem;">{{r.title}}</div>
+                                  <img :src="r.itempic" class="goods-imgurl">
+                                      <div class="good_name" style="height:0.9rem;">
+                                        <img :src="r.icon"/>{{r.title}}</div>
                                       <div>
                                         <span>
-                                          <van-tag type="danger" v-if="r.couponPrice!=0">{{r.couponPrice}}元优惠券</van-tag>
+                                          <van-tag type="danger" v-if="r.qfee!=0">{{r.qfee}}元优惠券</van-tag>
                                         </span>
-                                        <van-tag plain  class="intergral_style" style="color: #fa2509;">约赚:{{r.integral}} 佣金币</van-tag>
+                                        <van-tag plain  class="intergral_style" style="color: #fa2509;">约赚:{{r.fl}} 佣金币</van-tag>
                                       </div>
                                       <div style="height:0.8rem">
-                                        <span class="price_style">￥{{r.price}}</span>
-                                        <span v-if="r.couponPrice!=0" class="goods-express">&nbsp;原价:￥{{r.originPrice}}</span>
-                                        <span class="salenumber_style">已售{{r.salesNum}}件</span>
+                                        <span class="price_style">￥{{r.itemfee2}}</span>
+                                        <span v-if="r.qfee!=0" class="goods-express">&nbsp;原价:￥{{r.itemfee}}</span>
+                                        <span class="salenumber_style">已售{{r.itemmsell}}件</span>
                                       </div>
                               </van-cell-group>                                    
                           </van-col>
@@ -105,62 +124,63 @@
 </template>
 <script>
 import notice from "../../assets/icon/icon_notices.png";
+const API_PROXY = "https://bird.ioliu.cn/v1/?url=";
 export default {
   data() {
     return {
       url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url2:
+        "http://pupumei.cn/app/index.php?c=entry&i=2&m=bsht_tbkquan&do=gethdinfo&itemid=&sid=&itemfee=&itempic=&nb_shopid=",
       keyWord: "",
       rowlength: "",
       isLoading: true,
       articles: {},
       messages: "",
-      page: 1
+      limit: 1,
+      pagesize: 20,
+      onlyq: 0, //1只看有券，0全部
+      isht: 0, //1海外商品 0 全部
+      issite: 0 //1 站内精选 0 全部
     };
   },
   mounted() {
-    // if (this.isWeiXin()) {
-    this.onSearch();
-    // } else {
-    //   this.$router.push({
-    //     path: "/ping",
-    //     name: "errors"
-    //   });
-    // }
+    this.superSearch();
   },
   methods: {
-    //判断是否微信登陆 是不是微信浏览器
-    isWeiXin() {
-      let ua = window.navigator.userAgent.toLowerCase();
-      console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
-      if (ua.match(/MicroMessenger/i) == "micromessenger") {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    onSearch() {
+    superSearch() {
+      // console.log("onlyqchecked:" + this.onlyqchecked);
+      // console.log("ishtchecked:" + this.ishtchecked);
+      // console.log("issitechecked:" + this.issitechecked);
       let _this = this;
       // 此处使用node做了代理
       this.$axios
-        .get(
-          _this.url +
-            "/product/super-search?platform=2" +
-            "&pageNo=" +
-            _this.page +
+        .post(
+          _this.url2 +
             "&q=" +
-            _this.keyWord
+            _this.keyWord +
+            "&limit=" +
+            _this.limit +
+            "&size=" +
+            _this.pagesize +
+            "&onlyq=" +
+            _this.onlyq +
+            "&isht=" +
+            _this.isht +
+            "&issite=" +
+            _this.issite +
+            "&shopid=&actid=&type=5&nbnice=1&openid="
         )
         .then(function(response) {
           // 将得到的数据放到vue中的data
-          _this.articles = response.data.result;
-          var lengths = response.data.result.length;
+          _this.articles = response.data.nb_qlist;
+          var lengths = response.data.nb_qlist.length;
           _this.rowlength = lengths;
-          _this.page += 1;
+          _this.limit += 1;
+          console.log(_this.limit)
         })
         .catch(function(error) {
           console.log(error);
         });
-      // 注册scroll事件并监听
       window.addEventListener("scroll", this.searchfunction);
     },
     searchfunction() {
@@ -185,21 +205,31 @@ export default {
           sw = false;
           _this.$axios
             .get(
-              _this.url +
-                "/product/super-search?platform=2" +
-                "&pageNo=" +
-                _this.page++ +
+              _this.url2 +
                 "&q=" +
-                _this.keyWord
+                _this.keyWord +
+                "&limit=" +
+                _this.limit++ +
+                "&size=" +
+                _this.pagesize +
+                "&onlyq=" +
+                _this.onlyq +
+                "&isht=" +
+                _this.isht +
+                "&issite=" +
+                _this.issite +
+                "&shopid=&actid=&type=5&nbnice=1&openid="
             )
             .then(function(response) {
               // 将新获取的数据push到vue中的data，就会反应到视图中了
-              var lengths = response.data.result.length;
+              var lengths = response.data.nb_qlist.length;
               for (var i = 0; i < lengths; i++) {
-                _this.articles.push(response.data.result[i]);
+                _this.articles.push(response.data.nb_qlist[i]);
               }
+              // console.log(lengths)
               // 数据更新完毕，将开关打开
               sw = true;
+              console.log(_this.limit)
             })
             .catch(function(error) {
               console.log(error);
@@ -279,5 +309,28 @@ body {
   width: 100%;
   height: 100%;
   margin: auto;
+}
+.img_border {
+  border: 0.05rem solid #f1f1f1;
+}
+
+.intergral_style {
+  color: #fa2509;
+  font-size: 0.3rem;
+}
+
+.price_style {
+  color: red;
+  font-size: 0.5rem;
+}
+
+.goods-express {
+  color: #999;
+  font-size: 0.3rem;
+}
+
+.salenumber_style {
+  color: #999;
+  font-size: 0.2rem;
 }
 </style>

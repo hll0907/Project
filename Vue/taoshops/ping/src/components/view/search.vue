@@ -3,7 +3,7 @@
     <section class="searchBar" id="searchBar">
     <!-- 搜索框 -->
     <div :class="searchBarFixed == true ? 'isFixed' :''">
-        <van-search v-model="value" show-action placeholder="搜索拼多多优惠券商品" style="padding:2px;">
+        <van-search v-model="value" show-action placeholder="搜索商品" style="padding:2px;">
             <div slot="action"><van-button type="default" size="small" @click="getdatas" style="background:red;color:#ffffff;">搜索</van-button></div>
         </van-search>
     </div>
