@@ -1,8 +1,8 @@
 @font-face {
     font-family: 'iconfont';
     /* project id 658440 */
-    src: url('//at.alicdn.com/t/font_658440_1ex3nq1d9s0s5rk9.eot');
-    src: url('//at.alicdn.com/t/font_658440_1ex3nq1d9s0s5rk9.eot?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_658440_1ex3nq1d9s0s5rk9.woff') format('woff'), url('//at.alicdn.com/t/font_658440_1ex3nq1d9s0s5rk9.ttf') format('truetype'), url('//at.alicdn.com/t/font_658440_1ex3nq1d9s0s5rk9.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.eot');
+    src: url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.eot?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.woff') format('woff'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.ttf') format('truetype'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.svg#iconfont') format('svg');
 }
 
 .van-icon {
@@ -140,4 +140,15 @@
 
 .van-icon-e609:before {
     content: '\e608'
+}
+
+
+/*券后价*/
+
+.van-icon-e65e:before {
+    content: '\e65e'
+}
+
+.van-icon-e65d::before {
+    content: '\e65d'
 }

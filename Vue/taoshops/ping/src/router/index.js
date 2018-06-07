@@ -13,6 +13,7 @@ import {
     resolve
 } from 'path';
 import PageDetails from '@/components/view/PageDetails'
+import superPageDetails from '@/components/view/superPageDetails'
 import user from '@/components/view/user'
 import fans from '@/components/view/fans'
 import love from '@/components/view/love'
@@ -120,6 +121,14 @@ export default new Router({
             }
         },
         {
+            path: '/shg/superPageDetails',
+            name: 'superPageDetails',
+            component: superPageDetails,
+            meta: {
+                title: '商品详情',
+            }
+        },
+        {
             path: '/shg/user',
             name: 'user',
             component: user,
@@ -142,6 +151,7 @@ export default new Router({
             component: vip,
             meta: {
                 title: '超级搜',
+                keepAlive: true
             }
         },
         {
