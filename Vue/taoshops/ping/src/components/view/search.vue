@@ -303,7 +303,7 @@ export default {
     return {
       active: 0,
       isLoading: true,
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       articles: {},
       highreward: {},
       highdiscount: {},
@@ -707,7 +707,7 @@ export default {
     },
     getdatas() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "search",
         query: { keyword: this.value },
         params: {
@@ -729,7 +729,7 @@ export default {
     JumpPageDetails(productId) {
       var goodsId = productId;
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "PageDetails",
         query: {
           goodsId: goodsId

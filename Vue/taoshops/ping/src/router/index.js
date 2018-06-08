@@ -7,7 +7,7 @@ import Shoptao from '@/components/view/Shoptao'
 import ShopJuhuasuan from '@/components/view/ShopJuhuasuan'
 import Shopvideo from '@/components/view/Shopvideo'
 import Shopbaoyou from '@/components/view/Shopbaoyou'
-
+import sumbitorder from '@/components/view/sumbitorder'
 import test from "@/components/view/test"
 import {
     resolve
@@ -19,16 +19,14 @@ import fans from '@/components/view/fans'
 import love from '@/components/view/love'
 import vip from '@/components/view/vip'
 import viprecord from '@/components/view/viprecord'
-import vipfansrecord from '@/components/view/vipfansrecord'
+import commissionorder from '@/components/view/commissionorder'
 import setting from '@/components/view/setting'
 import putforwards from '@/components/view/putforwards'
 import personal from '@/components/view/personal'
-import personalVip from '@/components/view/personalVip'
 import personalReferee from '@/components/view/personalReferee'
-import personalteach from '@/components/view/personalteach'
 import commissions from '@/components/view/commissions'
 import bindingnumber from '@/components/view/bindingnumber'
-import bindingfriendscan from '@/components/view/bindingfriendscan'
+import bindingalipay from '@/components/view/bindingalipay'
 import bindingmoneyscan from '@/components/view/bindingmoneyscan'
 import errors from '@/components/view/errors'
 import customerservice from '@/components/view/customerservice'
@@ -129,6 +127,14 @@ export default new Router({
             }
         },
         {
+            path: '/shp/sumbitorder',
+            name: 'sumbitorder',
+            component: sumbitorder,
+            meta: {
+                title: '提交订单'
+            }
+        },
+        {
             path: '/shg/user',
             name: 'user',
             component: user,
@@ -163,14 +169,6 @@ export default new Router({
             }
         },
         {
-            path: '/shg/vipfansrecord',
-            name: 'vipfansrecord',
-            component: vipfansrecord,
-            meta: {
-                title: '订单记录',
-            }
-        },
-        {
             path: '/shg/setting',
             name: 'setting',
             component: setting,
@@ -191,15 +189,15 @@ export default new Router({
             name: 'bindingnumber',
             component: bindingnumber,
             meta: {
-                title: '绑定手机号微信号'
+                title: '绑定手机号'
             }
         },
         {
-            path: '/shg/bindingfriendscan',
-            name: 'bindingfriendscan',
-            component: bindingfriendscan,
+            path: '/shg/bindingalipay',
+            name: 'bindingalipay',
+            component: bindingalipay,
             meta: {
-                title: '上传微信好友二维码'
+                title: '绑定支付宝账号'
             }
         },
         {
@@ -219,14 +217,6 @@ export default new Router({
             }
         },
         {
-            path: '/shg/personalVip',
-            name: 'personalVip',
-            component: personalVip,
-            meta: {
-                title: '超级会员个人主页'
-            }
-        },
-        {
             path: '/shg/personalReferee',
             name: 'personalReferee',
             component: personalReferee,
@@ -235,17 +225,17 @@ export default new Router({
             }
         },
         {
-            path: '/shg/personalteach',
-            name: 'personalteach',
-            component: personalteach,
-            meta: {
-                title: '我的专属指导老师'
-            }
-        },
-        {
             path: '/shg/commissions',
             name: 'commissions',
             component: commissions,
+            meta: {
+                title: '佣金币提现记录'
+            }
+        },
+        {
+            path: '/shg/commissionorder',
+            name: 'commissionorder',
+            component: commissionorder,
             meta: {
                 title: '佣金币明细'
             }

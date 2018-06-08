@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       userId: 337466,
       nitice: "如未发现新收藏的商品,请下拉刷新即可",
       notice_icon: notice,
@@ -138,19 +138,19 @@ export default {
     },
     JumpVip() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "vip"
       });
     },
     JumpIndex() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "indexs"
       });
     },
     JumpUser() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "user"
       });
     },
@@ -275,7 +275,7 @@ export default {
     JumpPageDetails(goodsId) {
       var goodsId = goodsId;
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "PageDetails",
         query: { goodsId: goodsId }
       });

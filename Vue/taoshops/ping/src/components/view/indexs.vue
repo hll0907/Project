@@ -859,7 +859,7 @@ export default {
       active: 0,
       isLoading: true,
       img: "",
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       goodsId: "",
       articles: {},
       shumadata: {},
@@ -1845,7 +1845,7 @@ export default {
             toast.message = "正在加载中";
             // 页面跳转
             this.$router.push({
-              path: "/ping",
+              path: "/shg",
               name: "search",
               query: { keyword: this.value },
               params: {
@@ -1862,19 +1862,19 @@ export default {
     },
     JumpVip() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "vip"
       });
     },
     JumpLove() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "love"
       });
     },
     JumpUser() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "user"
       });
     },
@@ -1889,35 +1889,33 @@ export default {
     destroyed() {
       window.removeEventListener("scroll", scroll);
     },
-    JumpShopIndex(url){
-      var urls=url.substring(39);
-      if(urls=="/brand"){
+    JumpShopIndex(url) {
+      var urls = url.substring(39);
+      // alert(urls);
+      if (urls == "brand") {
         this.$router.push({
-          path: "/ping",
-          name: "Shopbrand",
-          query: {
-            Urls:urls
-          }
+          path: "/shg",
+          name: "Shopbrand"
         });
-      }else  if(urls=="/other/list?activityType=1"){
+      } else if (urls == "other/list?activityType=1") {
         this.$router.push({
-          path: "/ping",
-          name: "Shoptao",
+          path: "/shg",
+          name: "Shoptao"
         });
-      }else  if(urls=="/other/list?activityType=2"){
+      } else if (urls == "other/list?activityType=2") {
         this.$router.push({
-          path: "/ping",
-          name: "ShopJuhuasuan",
+          path: "/shg",
+          name: "ShopJuhuasuan"
         });
-      }else  if(urls=="/other/list?video=1"){
+      } else if (urls == "other/list?video=1") {
         this.$router.push({
-          path: "/ping",
-          name: "Shopvideo",
+          path: "/shg",
+          name: "Shopvideo"
         });
-      }else  if(urls=="/other/list?priceMin=9.9"){
+      } else if (urls == "other/list?priceMin=9.9") {
         this.$router.push({
-          path: "/ping",
-          name: "Shopbaoyou",
+          path: "/shg",
+          name: "Shopbaoyou"
         });
       }
     },
@@ -1925,7 +1923,7 @@ export default {
     JumpPageDetails(productId) {
       var goodsId = productId;
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "PageDetails",
         query: {
           goodsId: goodsId

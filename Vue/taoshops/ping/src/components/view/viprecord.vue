@@ -18,19 +18,19 @@
                         </div>
                         <div>
                             <div style="font-size:0.4rem;padding:2px;">
-                                    {{r.goodsName}}
+                                    {{r.goodsTitle}}
                             </div>
                             <div><span style="color：#999">订单号:{{r.orderId}}</span></div>
                             <div >
-                                <span style="color:red">实付{{r.goodsPrice}}元</span>
-                                <span style="color:red">奖励{{r.firstIntegral}}佣金币</span>
+                                <span style="color:red">实付{{r.order_price}}元</span>
+                                <span style="color:red">奖励{{r.orderScore}}佣金币</span>
                             </div>
                         </div>
                         <div style="clear:both;"></div>
                         <div style="padding:2px;">
                             <van-row>
                                 <van-col span="12">  
-                                    <div style="padding:2px;color:#999;">{{r.orderPayTime}}已付款</div>
+                                    <div style="padding:2px;color:#999;">{{r.createTime}}已付款</div>
                                 </van-col>
                                 <van-col span="12"> 
                                     <div style="text-align:right;color:#999"></div>
@@ -45,7 +45,7 @@
             </van-tab>
             <van-tab>
                 <div slot="title" @click="getReviewdata">
-                   审核中
+                   待奖励
                 </div>
                 <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
                  <div style="background:#ffffff;border:0.5px solid #f1f1f1;padding:2px;">
@@ -58,12 +58,12 @@
                         </div>
                         <div>
                             <div style="font-size:0.4rem;padding:2px;">
-                                    {{r.goodsName}}
+                                    {{r.goodsTitle}}
                             </div>
                              <div><span style="color：#999">订单号:{{r.orderId}}</span></div>
                             <div>
-                                <span style="color:red">实付{{r.goodsPrice}}元</span>
-                                <span style="color:red">奖励{{r.firstIntegral}}佣金币</span>
+                                <span style="color:red">实付{{r.order_price}}元</span>
+                                <span style="color:red">奖励{{r.orderScore}}佣金币</span>
                             </div>
                         </div>
                         <div style="clear:both;"></div>
@@ -98,19 +98,19 @@
                         </div>
                         <div>
                             <div style="font-size:0.4rem;padding:2px;">
-                                    {{r.goodsName}}
+                                    {{r.goodsTitle}}
                             </div>
                              <div><span style="color：#999">订单号:{{r.orderId}}</span></div>
                             <div>
-                                <span style="color:red">实付{{r.goodsPrice}}元</span>
-                                <span style="color:red">奖励{{r.firstIntegral}}佣金币</span>
+                                <span style="color:red">实付{{r.order_price}}元</span>
+                                <span style="color:red">奖励{{r.orderScore}}佣金币</span>
                             </div>
                         </div>
                         <div style="clear:both;"></div>
                         <div style="padding:2px;">
                             <van-row>
                                 <van-col span="12">  
-                                    <div style="padding:2px;color:#999;">{{r.rewardIntegralTime}}已奖励</div>
+                                    <div style="padding:2px;color:#999;">{{r.scoreTime}}已奖励</div>
                                 </van-col>
                                 <van-col span="12"> 
                                     <div style="text-align:right;color:#999"></div>
@@ -138,12 +138,12 @@
                         </div>
                         <div>
                             <div style="font-size:0.4rem;padding:2px;">
-                                    {{r.goodsName}}
+                                    {{r.goodsTitle}}
                             </div>
                              <div><span style="color：#999">订单号:{{r.orderId}}</span></div>
                             <div>
-                                <span style="color:red">实付{{r.goodsPrice}}元</span>
-                                <span style="color:red">奖励{{r.firstIntegral}}佣金币</span>
+                                <span style="color:red">实付{{r.order_price}}元</span>
+                                <span style="color:red">奖励{{r.orderScore}}佣金币</span>
                             </div>
                         </div>
                         <div style="clear:both;"></div>
@@ -171,8 +171,8 @@
 export default {
   data() {
     return {
-      id: "",
-      url: "http://ptk.baolinzhe.com/ptk/api/",
+      id: 337466,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       active: 0,
       NoReceiptdata: {}, //待确认收货
       Reviewdata: {}, //审核中
@@ -185,10 +185,10 @@ export default {
     };
   },
   mounted() {
-    var dataJson = JSON.parse(
-      decodeURIComponent(this.cookies.getCookie("userData"))
-    );
-    this.id = dataJson.id;
+    // var dataJson = JSON.parse(
+    //   decodeURIComponent(this.cookies.getCookie("userData"))
+    // );
+    // this.id = dataJson.id;
     this.getParams();
     this.getdata();
     this.getReviewdata();
@@ -227,20 +227,17 @@ export default {
       } else {
         // 此处使用node做了代理
         let page = 1;
-        let pageSize = 20;
         let sw = true;
         let orderStatus = 1;
         this.$axios
           .get(
             _this.url +
-              "/v1/order/list?userId=" +
+              "/order/list?userId=" +
               _this.id +
-              "&orderStatus=" +
+              "&status=" +
               orderStatus +
               "&page=" +
-              page++ +
-              "&pageSize=" +
-              pageSize
+              page++
           )
           .then(function(response) {
             // 将得到的数据放到vue中的data
@@ -277,14 +274,12 @@ export default {
                 _this.$axios
                   .get(
                     _this.url +
-                      "/v1/order/list?userId=" +
+                      "/order/list?userId=" +
                       _this.id +
-                      "&orderStatus=" +
+                      "&status=" +
                       orderStatus +
                       "&page=" +
-                      page++ +
-                      "&pageSize=" +
-                      pageSize
+                      page++
                   )
                   .then(function(response) {
                     // 将新获取的数据push到vue中的data，就会反应到视图中了
@@ -321,20 +316,17 @@ export default {
       } else {
         // 此处使用node做了代理
         let page = 1;
-        let pageSize = 20;
         let sw = true;
         let orderStatus = 2;
         this.$axios
           .get(
             _this.url +
-              "/v1/order/list?userId=" +
+              "/order/list?userId=" +
               _this.id +
-              "&orderStatus=" +
+              "&status=" +
               orderStatus +
               "&page=" +
-              page++ +
-              "&pageSize=" +
-              pageSize
+              page++
           )
           .then(function(response) {
             // 将得到的数据放到vue中的data
@@ -371,14 +363,12 @@ export default {
               _this.$axios
                 .get(
                   _this.url +
-                    "/v1/order/list?userId=" +
+                    "/order/list?userId=" +
                     _this.id +
-                    "&orderStatus=" +
+                    "&status=" +
                     orderStatus +
                     "&page=" +
-                    page++ +
-                    "&pageSize=" +
-                    pageSize
+                    page++
                 )
                 .then(function(response) {
                   // 将新获取的数据push到vue中的data，就会反应到视图中了
@@ -415,20 +405,17 @@ export default {
       } else {
         // 此处使用node做了代理
         let page = 1;
-        let pageSize = 20;
         let sw = true;
         let orderStatus = 3;
         this.$axios
           .get(
             _this.url +
-              "/v1/order/list?userId=" +
+              "/order/list?userId=" +
               _this.id +
-              "&orderStatus=" +
+              "&status=" +
               orderStatus +
               "&page=" +
-              page++ +
-              "&pageSize=" +
-              pageSize
+              page++
           )
           .then(function(response) {
             // 将得到的数据放到vue中的data
@@ -465,14 +452,12 @@ export default {
                 _this.$axios
                   .get(
                     _this.url +
-                      "/v1/order/list?userId=" +
+                      "/order/list?userId=" +
                       _this.id +
-                      "&orderStatus=" +
+                      "&status=" +
                       orderStatus +
                       "&page=" +
-                      page++ +
-                      "&pageSize=" +
-                      pageSize
+                      page++
                   )
                   .then(function(response) {
                     // 将新获取的数据push到vue中的data，就会反应到视图中了
@@ -508,20 +493,17 @@ export default {
       } else {
         // 此处使用node做了代理
         let page = 1;
-        let pageSize = 20;
         let sw = true;
         let orderStatus = 4;
         this.$axios
           .get(
             _this.url +
-              "/v1/order/list?userId=" +
+              "/order/list?userId=" +
               _this.id +
-              "&orderStatus=" +
+              "&status=" +
               orderStatus +
               "&page=" +
-              page++ +
-              "&pageSize=" +
-              pageSize
+              page++
           )
           .then(function(response) {
             // 将得到的数据放到vue中的data
@@ -557,14 +539,12 @@ export default {
                 _this.$axios
                   .get(
                     _this.url +
-                      "/v1/order/list?userId=" +
+                      "/order/list?userId=" +
                       _this.id +
-                      "&orderStatus=" +
+                      "&status=" +
                       orderStatus +
                       "&page=" +
-                      page++ +
-                      "&pageSize=" +
-                      pageSize
+                      page++
                   )
                   .then(function(response) {
                     // 将新获取的数据push到vue中的data，就会反应到视图中了

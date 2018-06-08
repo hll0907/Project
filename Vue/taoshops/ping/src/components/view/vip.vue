@@ -557,9 +557,9 @@ const API_PROXY = "https://bird.ioliu.cn/v1/?url=";
 export default {
   data() {
     return {
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       url2:
-        "http://pupumei.cn/app/index.php?c=entry&i=2&m=bsht_tbkquan&do=gethdinfo&itemid=&sid=&itemfee=&itempic=&nb_shopid=",
+        "http://yuf2.cn/app/index.php?c=entry&i=2&m=bsht_tbkquan&do=gethdinfo&itemid=&sid=&itemfee=&itempic=&nb_shopid=",
       keyWord: "",
       rowlength: "",
       isLoading: true,
@@ -1283,7 +1283,7 @@ export default {
         actid = "actid";
       }
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "superPageDetails",
         query: {
           goodsId: itemid,
@@ -1303,25 +1303,25 @@ export default {
     },
     JumpLove() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "love"
       });
     },
     JumpVip() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "vip"
       });
     },
     JumpIndex() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "indexs"
       });
     },
     JumpUser() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "user"
       });
     },

@@ -1,8 +1,8 @@
 @font-face {
     font-family: 'iconfont';
     /* project id 658440 */
-    src: url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.eot');
-    src: url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.eot?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.woff') format('woff'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.ttf') format('truetype'), url('//at.alicdn.com/t/font_658440_d2uv3tl2pnfjemi.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_658440_9qdjlc8fulqv9529.eot');
+    src: url('//at.alicdn.com/t/font_658440_9qdjlc8fulqv9529.eot?#iefix') format('embedded-opentype'), url('//at.alicdn.com/t/font_658440_9qdjlc8fulqv9529.woff') format('woff'), url('//at.alicdn.com/t/font_658440_9qdjlc8fulqv9529.ttf') format('truetype'), url('//at.alicdn.com/t/font_658440_9qdjlc8fulqv9529.svg#iconfont') format('svg');
 }
 
 .van-icon {
@@ -140,6 +140,13 @@
 
 .van-icon-e609:before {
     content: '\e608'
+}
+
+
+/* 提交订单 */
+
+.van-icon-e726:before {
+    content: '\e726'
 }
 
 

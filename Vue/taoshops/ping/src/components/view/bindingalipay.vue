@@ -3,16 +3,11 @@
     <section>
         <van-notice-bar :text="nitice" :left-icon="notice_icon"/>
     </section>
+    <section style="text-align:left;width:100%;height:100%">
+      <img src="../../assets/icon/icon_alplay.png"/>
+    </section>
     <van-cell-group>
-        <van-field label="手机号" v-model="phonenumber" type="tel" required placeholder="请输入手机号" />
-    </van-cell-group>
-    <van-cell-group>
-        <van-field center v-model="sms" label="短信验证码" required placeholder="请输入短信验证码" icon="clear" @click-icon="sms = ''">
-        <van-button slot="button" size="small" type="primary" @click="sendMessage">发送验证码</van-button>
-        </van-field>
-    </van-cell-group>
-    <van-cell-group>
-        <van-field label="密码" v-model="password" type="password" required placeholder="请输入您的密码(除汉字和特殊符号)" />
+        <van-field label="支付宝账号" v-model="alipaynumber" type="tel" required placeholder="请输入支付宝账号" />
     </van-cell-group>
    <div style="margin:20px;">
     <van-button size="large" type="default" @click="SaveUserData" style="background:red;color:#ffffff;">确认保存</van-button>
@@ -29,11 +24,9 @@ export default {
     return {
       id: 790714,
       url: "http://shg.yuf2.cn:8080/shg-api/api/",
-      nitice: "请认真核对您的手机号哦",
+      nitice: "请认真核对您的支付宝账号哦",
       notice_icon: notice,
-      phonenumber: "",
-      sms: "",
-      password:''
+      alipaynumber: ""
     };
   },
   mounted() {
@@ -49,18 +42,15 @@ export default {
       if (_this.id == "") {
         _this.$toast("当前您还未登录哦");
       } else {
-        var reg = 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
-        if (_this.phonenumber == "") {
-          _this.$toast("请输入手机号码");
-          return;
-        }
-        if (!reg.test(_this.phonenumber)) {
-          _this.$toast("手机格式不正确");
-          return;
-        }
         // 此处使用node做了代理
         this.$axios
-          .post(_this.url + "/user/bind_phone_number?userId=" + _this.id + "&phoneNum="+_this.phonenumber+"&code="+_this.sms+"&password="+_this.password)
+          .post(
+            _this.url +
+              "/user/bind-alipay?userId=" +
+              _this.id +
+              "&alipay=" +
+              _this.alipaynumber
+          )
           .then(function(response) {
             // 将得到的数据放到vue中的data
             if (response.data.code == 1) {
@@ -76,29 +66,11 @@ export default {
           });
       }
     },
-    sendMessage(){
-      let _this = this;
-      this.$axios
-          .post(_this.url + "/user/send_message?mobile="+_this.phonenumber)
-          .then(function(response) {
-            // 将得到的数据放到vue中的data
-            if (response.data.code == 1) {
-              _this.$toast("短信发送成功,请注意查收");
-              _this.$router.push({
-                path: "/shg",
-                name: "bindingnumber"
-              });
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-    },
     getParams() {
       // 取到路由带过来的参数
-      var phone = this.$route.params.phone;
+      var phone = this.$route.params.weixinnumber;
       // 将数据放在当前组件的数据内
-      this.phonenumber = phone;
+      this.alipaynumber = phone;
     },
     Cancel() {
       this.$router.push({

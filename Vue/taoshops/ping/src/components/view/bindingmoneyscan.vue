@@ -6,7 +6,7 @@
     <section>
         <div style="text-align:center;">
          <div style="margin:1.0rem;">
-            <img :src="wxMoneyQrcode" alt="暂无上传" style="width:8.0rem;height:11.0rem;"/>
+            <img :src="wxMoneyQrcode" alt="暂无上传" style="width:8.0rem;height:8.0rem;"/>
         </div>
         <div style="margin:20px;">
            <van-uploader accept="image/jpeg,image/png,image.jpg" multiple :after-read="onRead">
@@ -28,8 +28,8 @@ import qs from "qs";
 export default {
   data() {
     return {
-      id: "",
-      url: "http://ptk.baolinzhe.com/ptk/api/",
+      id: 337466,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       nitice: "微信收款二维码是用于提取打款，请认真上传",
       notice_icon: notice,
       filepath: "",
@@ -38,10 +38,10 @@ export default {
     };
   },
   mounted() {
-    var dataJson = JSON.parse(
-      decodeURIComponent(this.cookies.getCookie("userData"))
-    );
-    this.id = dataJson.id;
+    // var dataJson = JSON.parse(
+    //   decodeURIComponent(this.cookies.getCookie("userData"))
+    // );
+    // this.id = dataJson.id;
     this.getUserData();
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
         var time = new Date();
         var times = Date.parse(time);
         this.$axios
-          .post(_this.url + "/v1/user/" + _this.id)
+          .get(_this.url + "/user/" + _this.id)
           .then(function(response) {
             // 将得到的数据放到vue中的data
             _this.userdata = response.data.result;
@@ -85,7 +85,7 @@ export default {
       let _this = this;
       this.$axios
         .post(
-          _this.url + "/v1/user/" + _this.id + "/update/qrcode?type=2",
+          _this.url + "/user/bind-wxmoney?userId=" + _this.id,
           formdatas,
           config
         )
@@ -95,7 +95,7 @@ export default {
           if (response.data.code == 1) {
             _this.$toast("二维码上传成功");
             _this.$router.push({
-              path: "/ping",
+              path: "/shg",
               name: "setting"
             });
           }

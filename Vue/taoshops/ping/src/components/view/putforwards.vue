@@ -35,8 +35,7 @@
                 </van-cell>
               </van-col>
               <div>
-              <van-col span="12">
-               
+              <van-col span="12">   
                 <div style="text-align:right;" v-if="wxMoneyQrcode=='?time='+times">
                  <van-cell is-link @click="JumpBindingMoneysacn">
                   <template slot="title">
@@ -55,6 +54,75 @@
               </div>
             </van-row>
             </van-cell-group>
+            <van-cell-group>
+            <van-row>
+              <van-col span="12">
+                <van-cell>
+                  <template slot="title">
+                    <span>支付宝账号</span>
+                  </template>
+                </van-cell>
+              </van-col>
+              <div>
+              <van-col span="12">
+                <div style="text-align:right;">
+                 <van-cell>
+                  <template slot="title">
+                    <span v-if="alipay==''">未添加</span>
+                    <span>{{alipay}}</span>
+                  </template>
+                </van-cell>
+                </div>
+              </van-col>
+              </div>
+            </van-row>
+        </van-cell-group>
+        <van-cell-group>
+            <van-row>
+              <van-col span="12">
+                <van-cell>
+                  <template slot="title">
+                    <span>云联惠账号</span>
+                  </template>
+                </van-cell>
+              </van-col>
+              <div>
+              <van-col span="12">
+                <div style="text-align:right;">
+                 <van-cell>
+                  <template slot="title">
+                    <span v-if="ylhId==''">未添加</span>
+                    <span>{{ylhId}}</span>
+                  </template>
+                </van-cell>
+                </div>
+              </van-col>
+              </div>
+            </van-row>
+        </van-cell-group>
+        <van-cell-group>
+            <van-row>
+              <van-col span="12">
+                <van-cell>
+                  <template slot="title">
+                    <span>选择提现方式</span>
+                  </template>
+                </van-cell>
+              </van-col>
+              <div>
+              <van-col span="12">
+                <div>
+                  <van-radio-group v-model="radio" @change="onchange">
+                    <van-radio name="支付宝">支付宝</van-radio>
+                    <van-radio name="微信">微信</van-radio>
+                    <van-radio name="云联惠" disabled >云联惠</van-radio>
+                                        <!-- <van-radio name="云联惠"  >云联惠</van-radio> -->
+                  </van-radio-group>
+                </div>
+              </van-col>
+              </div>
+            </van-row>
+        </van-cell-group>
             <div style="height:0.6rem;margin-top:5px;">
               <span style="font-size:16px;margin:15px;">到账金额</span>
               <span style="margin:0px 0px 0px 15px;color:red;">{{(number-(number%100))/100}}.00元</span>
@@ -79,31 +147,49 @@
 </template>
 <script>
 import notice from "../../assets/icon/icon_notices.png";
+import { RadioGroup, Radio } from "vant";
 export default {
   data() {
     return {
-      id: "",
-      url: "http://ptk.baolinzhe.com/ptk/api/",
+      id: 337466,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       userdata: {},
       wxMoneyQrcode: "",
-      nitice: "满1000佣金币即可提现，需整百提现",
+      alipay: "",
+      ylhId: "",
+      nitice: "满2000佣金币即可提现，需整百提现",
       notice_icon: notice,
       number: "",
       money: 999,
       titledesc:
         "每天可成功兑换一次，提现审核时间为9:00-21:00,审核成功后客服会根据您提供的微信二维码，进行打款操作",
       times: "",
-      moneyshow: false
+      moneyshow: false,
+      radio: "",
+      type: "",
+      ylhPhone: ""
     };
   },
   mounted() {
-    var dataJson = JSON.parse(
-      decodeURIComponent(this.cookies.getCookie("userData"))
-    );
-    this.id = dataJson.id;
+    // var dataJson = JSON.parse(
+    //   decodeURIComponent(this.cookies.getCookie("userData"))
+    // );
+    // this.id = dataJson.id;
     this.getUserData();
   },
   methods: {
+    onchange() {
+      if (this.radio == "支付宝") {
+        // alert("支付宝");
+        this.type = "支付宝";
+      } else if (this.radio == "微信") {
+        this.type = "微信";
+        // alert("微信");
+      } else if (this.radio == "云联惠") {
+        this.type = "云联惠";
+        // alert("云联惠");
+      }
+    },
     JumpMoneyShowScan() {
       this.moneyshow = true;
     },
@@ -118,11 +204,13 @@ export default {
         var times = Date.parse(time);
         _this.times = times;
         this.$axios
-          .post(_this.url + "/v1/user/" + _this.id)
+          .get(_this.url + "/integral/total?userId=" + _this.id)
           .then(function(response) {
             // 将得到的数据放到vue中的data
             _this.userdata = response.data.result;
             _this.money = _this.userdata.whiteIntegral;
+            _this.ylhPhone = response.data.result.ylhPhone;
+            _this.alipay = _this.userdata.alipay;
             _this.wxMoneyQrcode =
               _this.userdata.wxMoneyQrcode + "?time=" + times;
             //console.log(_this.userdata);
@@ -143,52 +231,121 @@ export default {
     },
     JumpTotalMoney() {
       this.number = this.money - this.money % 100;
-      if (this.money < 1000) {
-        this.$toast("满1000佣金币才能提现哦");
+      if (this.money < 2000) {
+        this.$toast("满2000佣金币才能提现哦");
         this.number = "";
       }
     },
     JumpBindingMoneysacn() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "bindingmoneyscan"
       });
     },
     JumpCash() {
-      if (this.money < 1000) {
-        this.$toast("满1000佣金币才能提现哦");
-      } else if (this.number < 1000) {
-        this.$toast("您输入的佣金币要大于或等于1000");
+      if (this.money < 2000) {
+        this.$toast("满2000佣金币才能提现哦");
+      } else if (this.number < 2000) {
+        this.$toast("您输入的佣金币要大于或等于2000");
         this.number = "";
       } else {
-        let _this = this;
-        if (_this.id == "") {
-          _this.$toast("当前您还未登录哦");
-        } else {
-          _this.number = _this.number - _this.number % 100;
-          this.$axios
-            .post(
-              _this.url +
-                "/v1/integral/extract?userId=" +
-                _this.id +
-                "&integral=" +
-                _this.number
-            )
-            .then(function(response) {
-              // 将得到的数据放到vue中的data
-              _this.$toast(response.data.message);
-              _this.number = "";
-              _this.getUserData();
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
+        if (this.type == "支付宝") {
+          this.tixianalipay();
+        } else if (this.type == "微信") {
+          this.tixianweixin();
+        } else if (this.type == "云联惠") {
+          this.tixianyunlianhui();
         }
+      }
+    },
+    tixianalipay() {
+      // 缓存指针
+      let _this = this;
+      // alert(_this.type + "1");
+      if (_this.id == "") {
+        _this.$toast("当前您还未登录哦");
+      } else {
+        // 此处使用node做了代理
+        this.$axios
+          .post(
+            _this.url +
+              "/integral/extract/alipay?userId=" +
+              _this.id +
+              "&integral=" +
+              _this.number
+          )
+          .then(function(response) {
+            // 将得到的数据放到vue中的data
+            _this.$toast(response.data.message);
+            _this.getUserData();
+            // console.log(response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
+    },
+    tixianweixin() {
+      // alert(this.type + "2");
+      // 缓存指针
+      let _this = this;
+      if (_this.id == "") {
+        _this.$toast("当前您还未登录哦");
+      } else {
+        // 此处使用node做了代理
+        this.$axios
+          .post(
+            _this.url +
+              "/integral/extract/wechat?userId=" +
+              _this.id +
+              "&integral=" +
+              _this.number
+          )
+          .then(function(response) {
+            // 将得到的数据放到vue中的data
+            _this.$toast(response.data.message);
+            _this.getUserData();
+            // console.log(response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
+    },
+    tixianyunlianhui() {
+      // alert(this.type + "3");
+      // 缓存指针
+      let _this = this;
+      if (_this.id == "") {
+        _this.$toast("当前您还未登录哦");
+      } else {
+        // 此处使用node做了代理
+        this.$axios
+          .post(
+            _this.url +
+              "/integral/submit_extract?userId=" +
+              _this.id +
+              "&integral=" +
+              _this.number +
+              "&ylhId=" +
+              _this.ylhId +
+              "&phone=" +
+              _this.ylhPhone
+          )
+          .then(function(response) {
+            // 将得到的数据放到vue中的data
+            // console.log(response);
+            _this.$toast(response.data.message);
+            _this.getUserData();
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
       }
     },
     JumpDeti() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "commissions",
         params: {
           data: 3

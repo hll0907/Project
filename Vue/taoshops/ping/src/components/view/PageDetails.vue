@@ -88,7 +88,7 @@
         <van-goods-action-mini-btn @click="JumpAddCollect" v-if="hasCollect==false">
           <div style="text-align:center;">
             <van-icon name="e619"/>
-            <div>加入收藏夹</div>
+            <div style="margin:2px;">加入收藏夹</div>
           </div>
         </van-goods-action-mini-btn>
         <van-goods-action-mini-btn @click="JumpDelCollect(goodsId)" v-else>
@@ -98,7 +98,16 @@
           </div>
         </van-goods-action-mini-btn>
         <van-goods-action-big-btn text="分享优惠券" @click="OnclickShare" />
-        <van-goods-action-big-btn text="立即购买" primary @click="OnclickBuy"/>
+        <div v-if="time==0">
+        <van-goods-action-big-btn v-if="time==0" text="生成失败,立即刷新" primary @click="onClickLoad"/>
+        </div>
+        <div v-else>
+        <van-goods-action-big-btn v-if="transferchainUrl==''||transferchainUrl==null" primary text="正在生成,请稍等" />
+        <van-goods-action-big-btn v-else text="立即去购买" primary @click="OnclickBuy" 
+        v-clipboard:copy="taobaoNumber"
+        v-clipboard:success="onCopy"
+        v-clipboard:error="onError"/>
+        </div>
       </van-goods-action>
     </div>
 
@@ -142,7 +151,7 @@ import { Dialog } from "vant";
 export default {
   data() {
     return {
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       userId: 337466,
       goodsId: "",
       articles: {},
@@ -161,7 +170,8 @@ export default {
       imgSrcs: "",
       scan: "",
       prices: "",
-      scanUrl: ""
+      scanUrl: "",
+      time: 10
     };
   },
   mounted() {
@@ -179,9 +189,18 @@ export default {
     this.createQrc();
   },
   methods: {
+    onClickLoad() {
+      window.location.reload();
+    },
     getPageDetails() {
       // 缓存指针
       let _this = this;
+      let interval = window.setInterval(function() {
+        if (_this.time-- <= 0) {
+          _this.time = 0;
+          window.clearInterval(interval); //停止
+        }
+      }, 1000);
       // 此处使用node做了代理
       this.$axios
         .get(_this.url + "/product/detail?productId=" + _this.goodsId)
@@ -213,6 +232,7 @@ export default {
           if (response.data.code == 1) {
             _this.transferchainUrl = response.data.result;
             _this.makeShortUrl();
+            _this.maketaobaocommand();
             // console.log(_this.transferchainUrl);
           }
         })
@@ -326,7 +346,7 @@ export default {
         )
         .then(function(response) {
           if (response.data.code == 1) {
-            _this.postshow = true;
+            // _this.postshow = true;
             _this.taobaoNumber = response.data.result;
           }
         })

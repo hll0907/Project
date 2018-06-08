@@ -4,7 +4,7 @@
           <van-tabs v-model="active">
             <van-tab>
                 <div slot="title">
-                    <span @click="getcommissiondata">全部</span>
+                    <span @click="getcommissiondata">佣金币提现记录</span>
                 </div>
                 <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
                 <van-list>
@@ -15,19 +15,21 @@
                     <div v-else v-for="(r, key) in recordsdata" :key="key" >
                         <div style="margin:12px;">
                         <van-row>
-                            <van-col span="12" style="font-size:18px;">{{r.source}}</van-col>
+                            <van-col span="12" v-if="r.status==0" style="font-size:18px;">申请驳回</van-col>
+                            <van-col span="12" v-if="r.status==1" style="font-size:18px;">申请中</van-col>
+                            <van-col span="12" v-if="r.status==2" style="font-size:18px;">发放成功</van-col>
                             <van-col span="12">
                                 <div style="text-align:right;font-size:18px;">
-                                    <span v-if="r.ptype==1" style="color:green">+{{r.integral}}</span>
-                                    <span v-else-if="r.ptype==2" style="color:red">-{{r.integral}}</span>
+                                   <span v-if="r.status==1||r.status==2" style="color:red">-{{r.integral}}</span>
+                                    <span v-else style="color:green">+{{r.integral}}</span>
                                 </div></van-col>
                         </van-row>
                         <van-row>
-                            <van-col span="12" style="color:#999;font-size:14px;margin-top:5px;">{{r.createdAt}}</van-col>
-                            <van-col span="12"><div style="text-align:right;margin-top:5px;">余额：{{r.surplusIntegral}}</div></van-col>
+                            <div style="font-size:14px;margin-top:5px;">{{r.note}}</div>
                         </van-row>
                         <van-row>
-                            <div style="font-size:14px;margin-top:5px;">{{r.note}}</div>
+                            <van-col span="12" style="color:#999;font-size:14px;margin-top:5px;">提交时间{{r.created_at}}</van-col>
+                            <van-col span="12"><div style="text-align:right;margin-top:5px;">更新时间：{{r.updatedAt}}</div></van-col>
                         </van-row>
                         </div>
                         <section style="height:5px;background:#f1f1f1;"></section>
@@ -37,111 +39,7 @@
                 </van-list>
                 </van-pull-refresh>
             </van-tab>
-           <van-tab>
-                <div slot="title">
-                    <span @click="getyongjindata">订单佣金</span>
-                </div>
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                <van-list>
-                    <section style="background:#ffffff;">
-                    <div v-if="lengths==''" style="text-align:center;color:#999">
-                 ---------------------------我也是有底线的---------------------------
-                    </div>
-                    <div v-else v-for="(r, key) in yongjindata" :key="key" >
-                        <div style="margin:12px;">
-                        <van-row>
-                            <van-col span="12" style="font-size:18px;">{{r.source}}</van-col>
-                            <van-col span="12">
-                                <div style="text-align:right;font-size:18px;">
-                                    <span v-if="r.ptype==1" style="color:green">+{{r.integral}}</span>
-                                    <span v-else-if="r.ptype==2" style="color:red">-{{r.integral}}</span>
-                                </div></van-col>
-                        </van-row>
-                        <van-row>
-                            <van-col span="12" style="color:#999;font-size:14px;margin-top:5px;">{{r.createdAt}}</van-col>
-                            <van-col span="12"><div style="text-align:right;margin-top:5px;">余额：{{r.surplusIntegral}}</div></van-col>
-                        </van-row>
-                        <van-row>
-                            <div style="font-size:14px;margin-top:5px;">{{r.note}}</div>
-                        </van-row>
-                        </div>
-                        <section style="height:5px;background:#f1f1f1;"></section>
-                    </div>
-                </section>
-                <div style="color:#999;text-align:center;" v-if="lengths!=0">{{messages}}</div>
-                </van-list>
-                </van-pull-refresh>
-            </van-tab>
-           <van-tab>
-                <div slot="title">
-                    <span @click="getshouyidata">超级收益</span>
-                </div>
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                <van-list>
-                    <section style="background:#ffffff;">
-                    <div v-if="lengths==''" style="text-align:center;color:#999">
-                        ---------------------------我也是有底线的---------------------------
-                    </div>
-                    <div v-else v-for="(r, key) in shouyidata" :key="key" >
-                        <div style="margin:12px;">
-                        <van-row>
-                            <van-col span="12" style="font-size:18px;">{{r.source}}</van-col>
-                            <van-col span="12">
-                                <div style="text-align:right;font-size:18px;">
-                                    <span v-if="r.ptype==1" style="color:green">+{{r.integral}}</span>
-                                    <span v-else-if="r.ptype==2" style="color:red">-{{r.integral}}</span>
-                                </div></van-col>
-                        </van-row>
-                        <van-row>
-                            <van-col span="12" style="color:#999;font-size:14px;margin-top:5px;">{{r.createdAt}}</van-col>
-                            <van-col span="12"><div style="text-align:right;margin-top:5px;">余额：{{r.surplusIntegral}}</div></van-col>
-                        </van-row>
-                        <van-row>
-                            <div style="font-size:14px;margin-top:5px;">{{r.note}}</div>
-                        </van-row>
-                        </div>
-                        <section style="height:5px;background:#f1f1f1;"></section>
-                    </div>
-                </section>
-                <div style="color:#999;text-align:center;" v-if="lengths!=0">{{messages}}</div>
-                </van-list>
-                </van-pull-refresh>
-            </van-tab>
-           <van-tab>
-                <div slot="title">
-                    <span @click="gettixiandata">提现记录</span>
-                </div>
-                <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-                <van-list>
-                    <section style="background:#ffffff;">
-                    <div v-if="lengths==''" style="text-align:center;color:#999">
-                        ---------------------------我也是有底线的---------------------------
-                    </div>
-                    <div v-else v-for="(r, key) in tixiandata" :key="key" >
-                        <div style="margin:12px;">
-                        <van-row>
-                            <van-col span="12" style="font-size:18px;">{{r.source}}</van-col>
-                            <van-col span="12">
-                                <div style="text-align:right;font-size:18px;">
-                                    <span v-if="r.ptype==1" style="color:green">+{{r.integral}}</span>
-                                    <span v-else-if="r.ptype==2" style="color:red">-{{r.integral}}</span>
-                                </div></van-col>
-                        </van-row>
-                        <van-row>
-                            <van-col span="12" style="color:#999;font-size:14px;margin-top:5px;">{{r.createdAt}}</van-col>
-                            <van-col span="12"><div style="text-align:right;margin-top:5px;">余额：{{r.surplusIntegral}}</div></van-col>
-                        </van-row>
-                        <van-row>
-                            <div style="font-size:14px;margin-top:5px;">{{r.note}}</div>
-                        </van-row>
-                        </div>
-                        <section style="height:5px;background:#f1f1f1;"></section>
-                    </div>
-                </section>
-                </van-list>
-                <div style="color:#999;text-align:center;" v-if="lengths!=0">{{messages}}</div>
-                </van-pull-refresh>
-            </van-tab>
+           
         </van-tabs>
       </section>
   </div>
@@ -151,27 +49,21 @@ export default {
   data() {
     return {
       active: 0,
-      id: "",
-      url: "http://ptk.baolinzhe.com/ptk/api/",
+      id: 337466,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       recordsdata: {},
-      yongjindata: {},
-      shouyidata: {},
-      tixiandata: {},
       isLoading: true,
       lengths: "",
-      messages: "",
-      currentname: "全部"
+      messages: ""
     };
   },
   mounted() {
     this.getParams();
-    var dataJson = JSON.parse(
-      decodeURIComponent(this.cookies.getCookie("userData"))
-    );
-    this.id = dataJson.id;
+    // var dataJson = JSON.parse(
+    //   decodeURIComponent(this.cookies.getCookie("userData"))
+    // );
+    // this.id = dataJson.id;
     this.getcommissiondata();
-    this.gettixiandata();
-    this.getshouyidata();
   },
   methods: {
     getParams() {
@@ -183,15 +75,7 @@ export default {
     onRefresh() {
       // 下拉刷新
       setTimeout(() => {
-        if (this.currentname == "全部") {
-          this.getcommissiondata();
-        } else if (this.currentname == "佣金") {
-          this.getyongjindata();
-        } else if (this.currentname == "收益") {
-          this.getshouyidata();
-        } else if (this.currentname == "提现") {
-          this.gettixiandata();
-        }
+        this.getcommissiondata();
         this.$toast("数据刷新成功");
         this.isLoading = false;
       }, 500);
@@ -199,29 +83,22 @@ export default {
     getcommissiondata() {
       // 缓存指针
       let _this = this;
-      _this.currentname = "全部";
       if (_this.id == "") {
         _this.$toast("当前您还未登录哦");
       } else {
         // 此处使用node做了代理
         let page = 1;
-        let pageSize = 20;
         let sw = true;
         this.$axios
           .get(
-            _this.url +
-              "/v1/integral/records?userId=" +
-              _this.id +
-              "&type=0&page=" +
-              page +
-              "&pageSize=" +
-              pageSize
+            _this.url + "/integral/extract?userId=" + _this.id + "&page=" + page
           )
           .then(function(response) {
             // 将得到的数据放到vue中的data
             if (response.data.code == 1) {
-              _this.recordsdata = response.data.result.records;
-              _this.lengths = response.data.result.records.length;
+              page += 1;
+              _this.recordsdata = response.data.result.list;
+              _this.lengths = response.data.result.list.length;
             }
           })
           .catch(function(error) {
@@ -241,7 +118,6 @@ export default {
             document.documentElement.scrollTop == 0
               ? document.body.scrollHeight
               : document.documentElement.scrollHeight;
-          if (_this.currentname == "全部") {
             if (a + Math.floor(b) == c || a + Math.ceil(b) == c) {
               //如果开关打开则加载数据
               if (sw == true) {
@@ -250,19 +126,17 @@ export default {
                 _this.$axios
                   .get(
                     _this.url +
-                      "/v1/integral/records?userId=" +
+                      "/integral/extract?userId=" +
                       _this.id +
-                      "&type=0&page=" +
-                      page +
-                      "&pageSize=" +
-                      pageSize
+                      "&page=" +
+                      page++
                   )
                   .then(function(response) {
                     // 将得到的数据放到vue中的data
                     if (response.data.code == 1) {
-                      var lengths = response.data.result.length;
+                      var lengths = response.data.result.list.length;
                       for (var i = 0; i < lengths; i++) {
-                        _this.recordsdata.push(response.data.result[i]);
+                        _this.recordsdata.push(response.data.result.list[i]);
                       }
                     }
                     sw = true;
@@ -279,250 +153,8 @@ export default {
                 _this.messages = "正在加载中....";
               }
             }
-          }
         });
       }
-    },
-    getyongjindata() {
-      let _this = this;
-      _this.currentname = "佣金";
-      let page = 1;
-      let pageSize = 10;
-      let sw = true;
-      this.$axios
-        .get(
-          _this.url +
-            "/v1/integral/records?userId=" +
-            _this.id +
-            "&type=1&page=" +
-            page +
-            "&pageSize=" +
-            pageSize
-        )
-        .then(function(response) {
-          // 将得到的数据放到vue中的data
-          if (response.data.code == 1) {
-            _this.yongjindata = response.data.result.records;
-            _this.lengths = response.data.result.records.length;
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      // 注册scroll事件并监听
-      window.addEventListener("scroll", function() {
-        var a =
-          window.innerHeight ||
-          document.documentElement.clientHeight ||
-          document.body.clientHeight;
-        var b =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollTop
-            : document.documentElement.scrollTop;
-        var c =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollHeight
-            : document.documentElement.scrollHeight;
-        if (_this.currentname == "佣金") {
-          if (a + Math.floor(b) == c || a + Math.ceil(b) == c) {
-            //如果开关打开则加载数据
-            if (sw == true) {
-              // 将开关关闭
-              sw = false;
-              _this.$axios
-                .get(
-                  _this.url +
-                    "/v1/integral/records?userId=" +
-                    _this.id +
-                    "&type=1&page=" +
-                    page +
-                    "&pageSize=" +
-                    pageSize
-                )
-                .then(function(response) {
-                  // 将得到的数据放到vue中的data
-                  if (response.data.code == 1) {
-                    var lengths = response.data.result.length;
-                    for (var i = 0; i < lengths; i++) {
-                      _this.yongjindata.push(response.data.result[i]);
-                    }
-                  }
-                  sw = true;
-                  if (lengths == 0 || lengths == null) {
-                    _this.messages =
-                      "---------------------------我也是有底线的---------------------------";
-                  }
-                })
-                .catch(function(error) {
-                  console.log(error);
-                });
-            }
-            if (sw == false) {
-              _this.messages = "正在加载中....";
-            }
-          }
-        }
-      });
-    },
-    getshouyidata() {
-      let _this = this;
-      _this.currentname = "收益";
-      let page = 1;
-      let pageSize = 10;
-      let sw = true;
-      this.$axios
-        .get(
-          _this.url +
-            "/v1/integral/records?userId=" +
-            _this.id +
-            "&type=2&page=" +
-            page +
-            "&pageSize=" +
-            pageSize
-        )
-        .then(function(response) {
-          // 将得到的数据放到vue中的data
-          if (response.data.code == 1) {
-            _this.shouyidata = response.data.result.records;
-            _this.lengths = response.data.result.records.length;
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        }); // 注册scroll事件并监听
-      window.addEventListener("scroll", function() {
-        var a =
-          window.innerHeight ||
-          document.documentElement.clientHeight ||
-          document.body.clientHeight;
-        var b =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollTop
-            : document.documentElement.scrollTop;
-        var c =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollHeight
-            : document.documentElement.scrollHeight;
-        if (_this.currentname == "收益") {
-          if (a + Math.floor(b) == c || a + Math.ceil(b) == c) {
-            //如果开关打开则加载数据
-            if (sw == true) {
-              // 将开关关闭
-              sw = false;
-              _this.$axios
-                .get(
-                  _this.url +
-                    "/v1/integral/records?userId=" +
-                    _this.id +
-                    "&type=2&page=" +
-                    page +
-                    "&pageSize=" +
-                    pageSize
-                )
-                .then(function(response) {
-                  // 将得到的数据放到vue中的data
-                  if (response.data.code == 1) {
-                    var lengths = response.data.result.length;
-                    for (var i = 0; i < lengths; i++) {
-                      _this.shouyidata.push(response.data.result[i]);
-                    }
-                  }
-                  sw = true;
-                  if (lengths == 0 || lengths == null) {
-                    _this.messages =
-                      "---------------------------我也是有底线的---------------------------";
-                  }
-                })
-                .catch(function(error) {
-                  console.log(error);
-                });
-            }
-            if (sw == false) {
-              _this.messages = "正在加载中....";
-            }
-          }
-        }
-      });
-    },
-    gettixiandata() {
-      let _this = this;
-      _this.currentname = "提现";
-      let page = 1;
-      let pageSize = 10;
-      let sw = true;
-      this.$axios
-        .get(
-          _this.url +
-            "/v1/integral/records?userId=" +
-            _this.id +
-            "&type=3&page=" +
-            page +
-            "&pageSize=" +
-            pageSize
-        )
-        .then(function(response) {
-          // 将得到的数据放到vue中的data
-          if (response.data.code == 1) {
-            _this.tixiandata = response.data.result.records;
-            _this.lengths = response.data.result.records.length;
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      // 注册scroll事件并监听
-      window.addEventListener("scroll", function() {
-        var a =
-          window.innerHeight ||
-          document.documentElement.clientHeight ||
-          document.body.clientHeight;
-        var b =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollTop
-            : document.documentElement.scrollTop;
-        var c =
-          document.documentElement.scrollTop == 0
-            ? document.body.scrollHeight
-            : document.documentElement.scrollHeight;
-        if (_this.currentname == "提现") {
-          if (a + Math.floor(b) == c || a + Math.ceil(b) == c) {
-            //如果开关打开则加载数据
-            if (sw == true) {
-              // 将开关关闭
-              sw = false;
-              _this.$axios
-                .get(
-                  _this.url +
-                    "/v1/integral/records?userId=" +
-                    _this.id +
-                    "&type=3&page=" +
-                    page +
-                    "&pageSize=" +
-                    pageSize
-                )
-                .then(function(response) {
-                  if (response.data.code == 1) {
-                    var lengths = response.data.result.length;
-                    for (var i = 0; i < lengths; i++) {
-                      _this.tixiandata.push(response.data.result[i]);
-                    }
-                  }
-                  sw = true;
-                  if (lengths == 0 || lengths == null) {
-                    _this.messages =
-                      "---------------------------我也是有底线的---------------------------";
-                  }
-                })
-                .catch(function(error) {
-                  console.log(error);
-                });
-            }
-            if (sw == false) {
-              _this.messages = "正在加载中....";
-            }
-          }
-        }
-      });
     }
   }
 };

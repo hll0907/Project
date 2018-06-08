@@ -47,7 +47,7 @@
               <van-col span="12">
                 <van-cell>
                   <template slot="title">
-                    <span>微信号</span>
+                    <span>支付宝账号</span>
                   </template>
                 </van-cell>
               </van-col>
@@ -56,11 +56,11 @@
                 <div style="text-align:right;">
                  <van-cell>
                   <template slot="title">
-                    <span v-if="weixinnumber==''">未添加</span>
+                    <span v-if="alipaynumber==''">未添加</span>
                     <span v-else 
-                    v-clipboard:copy="weixinnumber"
+                    v-clipboard:copy="alipaynumber"
                     v-clipboard:success="onCopy"
-                    v-clipboard:error="onError">{{weixinnumber}} ></span>
+                    v-clipboard:error="onError">{{alipaynumber}} ></span>
                   </template>
                 </van-cell>
                 </div>
@@ -68,29 +68,22 @@
               </div>
             </van-row>
         </van-cell-group>
-        <!-- 微信二维码 -->
         <van-cell-group>
-            <van-row>
+           <van-row>
               <van-col span="12">
                 <van-cell>
                   <template slot="title">
-                    <span>微信二维码</span>
+                    <span>邀请码</span>
                   </template>
                 </van-cell>
               </van-col>
               <div>
               <van-col span="12">
-                <div style="text-align:right;" v-if="wxQrcode=='?time='+times||wxQrcode==''">
+                <div style="text-align:right;">
                  <van-cell>
                   <template slot="title">
-                    <span >未添加</span>
-                  </template>
-                </van-cell>
-                </div>
-                <div style="text-align:right;" @click="JumpScanShowScan" v-else>
-                 <van-cell>
-                  <template slot="title">
-                    <span><img :src="wxQrcode" style="width:10%;" /> ></span>
+                    <span v-if="invitationCode==''">未添加</span>
+                    <span v-else>{{invitationCode}} ></span>
                   </template>
                 </van-cell>
                 </div>
@@ -128,12 +121,8 @@
               </div>
             </van-row>
         </van-cell-group>
+        
       </section>
-
-      <van-dialog v-model="sacnshow" :show-confirm-button="false" title="我的二维码" :close-on-click-overlay="true">
-        <div style="text-align:center;"><img :src="wxQrcode" style="width:80%"/></div>
-        <div style="text-align:center;">长按可识别二维码,添加好友</div>
-      </van-dialog>
 
       <van-dialog v-model="moneyshow" :show-confirm-button="false" title="我的收钱二维码" :close-on-click-overlay="true">
         <div style="text-align:center;"><img :src="wxMoneyQrcode" style="width:80%"/></div>
@@ -144,15 +133,15 @@
 export default {
   data() {
     return {
-      id: "",
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      id: 337466,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       phone: "",
-      weixinnumber: "",
+      alipaynumber: "",
       refereId: "",
       headurl: "",
       userdata: {},
       wxMoneyQrcode: "",
-      wxQrcode: "",
+      invitationCode:'',
       sacnshow: false,
       moneyshow: false,
       times: ""
@@ -164,11 +153,11 @@ export default {
   },
   methods: {
     onCopy: function(e) {
-      this.$toast("微信号已复制成功:" + e.text);
+      this.$toast("支付宝账号已复制成功:" + e.text);
     },
     onError: function(e) {
       console.log("无法复制文本！");
-      this.$toast("微信号复制失败了哦");
+      this.$toast("支付宝账号复制失败了哦");
     },
     callPhone() {
       window.location.href = "tel:" + this.phone;
@@ -188,20 +177,23 @@ export default {
     getUserData() {
       // 缓存指针
       let _this = this;
-        // 此处使用node做了代理
-        this.$axios
-          .get(_this.url + "/user/" + _this.refereId)
-          .then(function(response) {
-            // 将得到的数据放到vue中的data
-            _this.userdata = response.data.result;
-            _this.headurl = _this.userdata.imageUrl;
-            _this.phone = _this.userdata.phone;
-          })
-          .catch(function(error) {
-            console.log(error);
-            _this.$toast("网络异常错误...");
-          });
-      }
+      // 此处使用node做了代理
+      this.$axios
+        .get(_this.url + "/user/" + _this.refereId)
+        .then(function(response) {
+          // 将得到的数据放到vue中的data
+          _this.userdata = response.data.result;
+          _this.headurl = _this.userdata.imageUrl;
+          _this.phone = _this.userdata.phone;
+          _this.alipaynumber=_this.userdata.alipay;
+          _this.wxMoneyQrcode=_this.userdata.wxMoneyQrcode;
+          _this.invitationCode=_this.userdata.invitationCode;
+        })
+        .catch(function(error) {
+          console.log(error);
+          _this.$toast("网络异常错误...");
+        });
+    }
   },
   watch: {
     // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可

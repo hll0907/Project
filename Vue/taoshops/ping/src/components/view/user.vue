@@ -26,17 +26,23 @@
         <section style="height:5px;">&nbsp;</section>
         <section>
             <div>
+              <van-cell-group>
+                  <van-cell title="可提现佣金币" icon="e610" :value="whiteIntegral" label="100佣金币=1元,点击去提现" @click="JumpPutforwards" is-link style="color:red;"/>
+                  <van-cell title="佣金币记录" icon="e600" @click="Jumpcommission" is-link style="color:red;"/>
+                </van-cell-group>
+                  <section style="height:5px;">&nbsp;</section>
                 <van-cell-group>
-                 <van-cell title="我的订单" icon="e609" is-link style="color:red;"/>
+                 <van-cell title="我的订单" icon="e609" is-link style="color:red;" @click="JumpOrder"/>
+                  <van-cell title="提交订单" icon="e726" is-link style="color:red;" @click="sumbitOrder"/>
                 </van-cell-group>
                 <section style="height:5px;">&nbsp;</section>
                 <van-cell-group>
                   <van-cell title="我的推荐人"  icon="e637" @click="jumpRecommendation" is-link style="color:red;"/>
-                   <van-cell title="我的粉丝"  icon="e60b" @click="jumpFans" is-link style="color:red;"/>
+                   <van-cell title="我的好友"  icon="e60b" @click="jumpFans" is-link style="color:red;"/>
                    <van-cell title="专属推广海报"  icon="e60a" @click="jumpPosterUrl" is-link style="color:red;"/>
                 </van-cell-group>
-                <section style="height:5px;">&nbsp;</section>
-
+              
+                
             </div>
         </section>
         <section style="height:50px;">&nbsp;</section>
@@ -86,36 +92,37 @@
 export default {
   data() {
     return {
-      id: "337466",
-      isVip: false,
-      url: "http://shg.blpev.cn:8080/shg-api/api/",
+      id: 790714,
+      url: "http://shg.yuf2.cn:8080/shg-api/api/",
       userdata: {},
       headurl: "",
       refereId: "",
       posterUrl: "",
-      postUrlshow: false
+      postUrlshow: false,
+      whiteIntegral: ""
     };
   },
   mounted() {
-    // if (this.isWeiXin()) {
     this.getUserData();
-    // } else {
-    //   this.$router.push({
-    //     path: "/ping",
-    //     name: "errors"
-    //   });
-    // }
   },
   methods: {
-    //判断是否微信登陆 是不是微信浏览器
-    isWeiXin() {
-      let ua = window.navigator.userAgent.toLowerCase();
-      console.log(ua); //mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
-      if (ua.match(/MicroMessenger/i) == "micromessenger") {
-        return true;
-      } else {
-        return false;
-      }
+    Jumpcommission() {
+      this.$router.push({
+        path: "/shg",
+        name: "commissionorder"
+      });
+    },
+    JumpPutforwards() {
+      this.$router.push({
+        path: "/shg",
+        name: "putforwards"
+      });
+    },
+    sumbitOrder() {
+      this.$router.push({
+        path: "/shg",
+        name: "sumbitorder"
+      });
     },
     getUserData() {
       // 缓存指针
@@ -131,6 +138,7 @@ export default {
             _this.userdata = response.data.result;
             _this.headurl = _this.userdata.imageUrl;
             _this.refereId = _this.userdata.refereId;
+            _this.whiteIntegral = _this.userdata.whiteIntegral;
             _this.posterUrl = _this.userdata.posterUrl;
           })
           .catch(function(error) {
@@ -141,31 +149,31 @@ export default {
     },
     jumpIndex() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "indexs"
       });
     },
     JumpVip() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "vip"
       });
     },
     JumpLove() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "love"
       });
     },
     JumpSetting() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "setting"
       });
     },
     jumpRecommendation() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "personalReferee",
         params: {
           refereId: this.refereId
@@ -174,7 +182,7 @@ export default {
     },
     jumpFans() {
       this.$router.push({
-        path: "/ping",
+        path: "/shg",
         name: "fans"
       });
     },
@@ -185,10 +193,10 @@ export default {
         this.postUrlshow = true;
       }
     },
-    jumpTeam() {
+    JumpOrder() {
       this.$router.push({
-        path: "/ping",
-        name: "customerservice",
+        path: "/shg",
+        name: "viprecord",
         params: {
           userId: this.id
         }
